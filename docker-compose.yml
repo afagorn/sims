@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  nginx:
+    build:
+      context: ./docker/dev/nginx
+      dockerfile: nginx.dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - php-fpm
+
+  php-fpm:
+    build:
+      context: ./docker/dev/php
+      dockerfile: php-fpm.dockerfile
+    volumes:
+      - ./app:/app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  php-cli:
+    build:
+      context: ./docker/dev/php
+      dockerfile: php-cli.dockerfile
+    volumes:
+      - ./app:/app
+      - composer:/root/.composer/cache
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  composer:
